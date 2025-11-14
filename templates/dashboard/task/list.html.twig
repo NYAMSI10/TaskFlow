@@ -1,95 +1,160 @@
 {% extends "dashboard/layout.html.twig" %}
 
-{% block title %}Task
+{% block title %}Liste des tâches
 {% endblock %}
 
 {% block content %}
-	<div class="max-w-6xl mx-auto bg-white shadow rounded-2xl p-8">
-		<h1 class="text-2xl font-bold mb-6">Liste des tâches</h1>
+	<div class="max-w-7xl mx-auto bg-white shadow rounded-2xl p-6 md:p-10">
 
+		<h1 class="text-2xl font-bold mb-8">Liste des tâches</h1>
 
-		<!-- Filtres & Tri -->
-		<div
-			class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-			<!-- Filtre Statut -->
-			<select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
-				<option value="">Statut : Tous</option>
-				<option value="todo">À faire</option>
-				<option value="in_progress">En cours</option>
-				<option value="done">Terminées</option>
-			</select>
-
-
-			<!-- Filtre Priorité -->
-			<select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
-				<option value="">Priorité : Toutes</option>
-				<option value="low">Basse</option>
-				<option value="medium">Moyenne</option>
-				<option value="high">Haute</option>
-			</select>
-
-
-			<!-- Tri -->
-			<select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
-				<option value="date_asc">Date limite (croissant)</option>
-				<option value="date_desc">Date limite (décroissant)</option>
-				<option value="priority">Priorité</option>
-			</select>
-
-
-			<!-- Bouton créer -->
-			<a href="{{ path('app_add_task') }}" class="bg-blue-600 text-white text-center py-2 rounded-lg hover:bg-blue-700">Créer une tâche</a>
+		<!-- Tabs -->
+		<div class="flex flex-wrap gap-2 mb-8">
+			<a href="{{ path('app_task', {'view': 'all_tasks'}) }}" class="px-4 py-2 rounded-lg transition
+					                  {{ current_view == 'all_tasks'
+					                     ? 'bg-blue-600 text-white'
+					                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+				Toutes les tâches
+			</a>
+			<a href="{{ path('app_task', {'view': 'my_tasks'}) }}" class="px-4 py-2 rounded-lg transition
+					                  {{ current_view == 'my_tasks'
+					                     ? 'bg-blue-600 text-white'
+					                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+				Mes tâches
+			</a>
+			<a href="{{ path('app_task', {'view': 'shared_tasks'}) }}" class="px-4 py-2 rounded-lg transition
+					                  {{ current_view == 'shared_tasks'
+					                     ? 'bg-blue-600 text-white'
+					                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
+				Tâches partagées
+			</a>
 		</div>
 
+		<!-- Filters -->
+		<form method="get" action="{{ path('app_task') }}">
+			<input type="hidden" name="view" value="{{ current_view }}">
 
-		<!-- Tableau des tâches -->
-		<div class="overflow-x-auto">
-			<table class="w-full border-collapse">
+			<div
+				class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+
+				<!-- Status -->
+				<select name="status" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
+					<option value="" {{ current_status == '' ? 'selected' }}>Statut : Tous</option>
+					<option value="todo" {{ current_status == 'todo' ? 'selected' }}>À faire</option>
+					<option value="in_progress" {{ current_status == 'in_progress' ? 'selected' }}>En cours</option>
+					<option value="done" {{ current_status == 'done' ? 'selected' }}>Terminées</option>
+				</select>
+
+				<!-- Priority -->
+				<select name="priority" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
+					<option value="" {{ current_priority == '' ? 'selected' }}>Priorité : Toutes</option>
+					<option value="low" {{ current_priority == 'low' ? 'selected' }}>Basse</option>
+					<option value="medium" {{ current_priority == 'medium' ? 'selected' }}>Moyenne</option>
+					<option value="high" {{ current_priority == 'high' ? 'selected' }}>Haute</option>
+				</select>
+
+				<!-- Sort -->
+				<select name="sort" class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
+					<option value="date_asc" {{ current_sort == 'date_asc' ? 'selected' }}>Date limite (croissant)</option>
+					<option value="date_desc" {{ current_sort == 'date_desc' ? 'selected' }}>Date limite (décroissant)</option>
+					<option value="priority" {{ current_sort == 'priority' ? 'selected' }}>Priorité</option>
+				</select>
+
+				<!-- Actions -->
+				<div class="flex gap-2">
+					<a href="{{ path('app_add_task') }}" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-center hover:bg-blue-700">
+						Créer
+					</a>
+					<a href="{{ path('app_add_share_talk') }}" class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg text-center hover:bg-green-700">
+						Partager
+					</a>
+				</div>
+			</div>
+		</form>
+
+		<!-- Tasks Table -->
+		<div class="overflow-x-auto bg-white rounded-lg shadow-sm border">
+			<table class="w-full">
 				<thead>
-					<tr class="bg-gray-100 text-gray-700">
+					<tr class="bg-gray-50 text-gray-700 text-sm">
 						<th class="p-3 text-left">Titre</th>
 						<th class="p-3 text-left">Priorité</th>
 						<th class="p-3 text-left">Statut</th>
 						<th class="p-3 text-left">Date limite</th>
 						<th class="p-3 text-center">Actions</th>
+						<th class="p-3 text-center">Partagé</th>
 					</tr>
 				</thead>
 
-
-				<tbody class="text-gray-700">
-					{% if tasks | length > 0 %}
+				<tbody>
+					{% if tasks|length > 0 %}
 						{% for task in tasks %}
-
-							<tr class="border-b hover:bg-blue-300 cursor-pointer transition duration-50">
+							<tr class="border-b hover:bg-blue-50 transition">
 								<td class="p-3 font-medium">{{ task.title }}</td>
+
 								<td class="p-3">
-									<span class="px-2 py-1 rounded bg-red-100 text-red-600 text-sm">{{ task.priority }}</span>
+									<span class="px-2 py-1 text-sm rounded
+											                                    {% if task.priority == 'high' %}
+											                                        bg-red-100 text-red-700
+											                                    {% elseif task.priority == 'medium' %}
+											                                        bg-yellow-100 text-yellow-700
+											                                    {% else %}
+											                                        bg-green-100 text-green-700
+											                                    {% endif %}">
+										{{ task.priority }}
+									</span>
 								</td>
+
 								<td class="p-3">
-									<span class="px-2 py-1 rounded bg-yellow-100 text-yellow-600 text-sm">{{ task.status }}</span>
+									<span class="px-2 py-1 text-sm rounded
+											                                    {% if task.status == 'done' %}
+											                                        bg-green-100 text-green-700
+											                                    {% elseif task.status == 'in_progress' %}
+											                                        bg-blue-100 text-blue-700
+											                                    {% else %}
+											                                        bg-gray-200 text-gray-700
+											                                    {% endif %}">
+										{{ task.status }}
+									</span>
 								</td>
-								<td class="p-3">{{ task.deadline|date('d/m/Y') }}</td>
-								<td class="p-3 flex justify-center gap-3">
+
+								<td class="p-3">
+									{{ task.deadline ? task.deadline|date('d/m/Y') : '-' }}
+								</td>
+
+								<td class="p-3 text-center flex justify-center gap-3">
 									<a href="{{ path('app_edit_task', {'id': task.id}) }}" class="text-blue-600 hover:underline">Modifier</a>
+
 									<a href="{{ path('app_delete_task', {'id': task.id}) }}" class="text-red-600 hover:underline" onclick="return confirm('Voulez-vous vraiment supprimer cette tâche ?');">
 										Supprimer
 									</a>
+								</td>
+
+								<td class="p-3 text-center">
+									{% if task.shared %}
+										{% if task.user.id == app.user.id %}
+											<a href="{{ path('app_edit_share_task', {'id': task.id}) }}" class="px-2 py-1 rounded bg-green-100 text-green-700 text-sm hover:bg-green-200">
+												Oui
+											</a>
+										{% else %}
+											<span class="px-2 py-1 rounded bg-green-100 text-green-700 text-sm">Oui</span>
+										{% endif %}
+									{% else %}
+										<span class="px-2 py-1 rounded bg-red-100 text-red-700 text-sm">Non</span>
+									{% endif %}
 								</td>
 							</tr>
 						{% endfor %}
 					{% else %}
 						<tr>
-							<td colspan="5" class="p-3 text-center">Aucune tâche trouvée.</td>
+							<td colspan="6" class="p-4 text-center text-gray-600">
+								Aucune tâche trouvée.
+							</td>
 						</tr>
 					{% endif %}
-
-					<!-- Ligne exemple -->
-
-
 				</tbody>
 			</table>
 		</div>
-
 
 	</div>
 {% endblock %}

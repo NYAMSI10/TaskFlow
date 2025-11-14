@@ -33,6 +33,9 @@ class Task
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\OneToOne(mappedBy: 'task', cascade: ['persist', 'remove'])]
+    private ?Shared $shared = null;
+
 
 
     public function getId(): ?int
@@ -108,6 +111,28 @@ class Task
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getShared(): ?Shared
+    {
+        return $this->shared;
+    }
+
+    public function setShared(?Shared $shared): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($shared === null && $this->shared !== null) {
+            $this->shared->setTask(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($shared !== null && $shared->getTask() !== $this) {
+            $shared->setTask($this);
+        }
+
+        $this->shared = $shared;
 
         return $this;
     }

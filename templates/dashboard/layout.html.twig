@@ -18,16 +18,19 @@
 
 	<body class="bg-gray-100">
 
-		<div
-			class="flex">
+		<div class="flex">
 
 			<!-- SIDEBAR -->
-			<aside class="w-64 bg-white h-screen shadow-md fixed">
-				<div class="p-6 border-b">
+			<aside id="sidebar" class="w-64 bg-white h-screen shadow-md fixed z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+				<div class="p-6 border-b flex items-center justify-between">
 					<h1 class="text-xl font-bold flex items-center gap-2">
 						<span class="bg-blue-600 text-white px-2 py-1 rounded-lg">TF</span>
 						TaskFlow
 					</h1>
+					<!-- Bouton fermer sur mobile -->
+					<button id="closeSidebar" class="lg:hidden text-gray-600 hover:text-gray-900">
+						<i data-feather="x"></i>
+					</button>
 				</div>
 
 				<nav class="p-4">
@@ -43,19 +46,29 @@
 				</nav>
 			</aside>
 
+			<!-- Overlay pour mobile -->
+			<div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
+
 			<!-- MAIN CONTENT -->
-			<main
-				class="ml-64 w-full p-6">
+			<main class="lg:ml-64 w-full p-4 md:p-6">
 
 				<!-- HEADER -->
 				<header class="flex items-center justify-between mb-6">
-					<h2 class="text-2xl font-bold">Dashboard</h2>
-
-					<div class="flex items-center gap-4">
-						<button class="p-2 bg-gray-200 rounded-full">
-							<i data-feather="bell"></i>
+					<div class="flex items-center gap-3">
+						<!-- Bouton menu burger sur mobile -->
+						<button id="menuToggle" class="lg:hidden p-2 hover:bg-gray-200 rounded-lg">
+							<i data-feather="menu"></i>
 						</button>
-						<img src="https://i.pravatar.cc/40" class="rounded-full w-10 h-10">
+						<h2 class="text-xl md:text-2xl font-bold">Dashboard</h2>
+					</div>
+
+					<div class="flex items-center gap-2 md:gap-4">
+						<a href="{{ path('app_logout') }}" class="p-2 bg-gray-200 hover:bg-blue-400 hover:text-white rounded-full cursor-pointer" onclick="return confirm('Voulez-vous vraiment vous déconnecter ?');">
+							<i data-feather="log-out" class="w-4 h-4"></i>
+						</a>
+						<span class="hidden sm:block p-2 text-sm md:text-base">
+							{{ app.user.email() }}
+						</span>
 					</div>
 				</header>
 
@@ -67,42 +80,54 @@
 
 		</div>
 
-		<!-- Feather Icons -->
-	 <script>
-														    feather.replace();
-														</script>
+		<!-- Script pour le menu mobile -->
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				// Initialiser les icônes Feather
+				feather.replace();
 
-		<!-- Chart.js -->
-		 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+				const menuToggle = document.getElementById('menuToggle');
+				const closeSidebar = document.getElementById('closeSidebar');
+				const sidebar = document.getElementById('sidebar');
+				const overlay = document.getElementById('overlay');
 
-		 <script>
-																												    /** Line Chart **/
-																									  const ctx = document.getElementById('salesChart');
-																												    new Chart(ctx, {
-																												        type: 'bar',
-																												        data: {
-																												            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-																												            datasets: [{
-																												                label: 'Sales',
-																												                data: [12, 19, 8, 17, 12, 15, 18, 10, 22, 19, 14, 7],
-																												                borderWidth: 1
-																												            }]
-																												        }
-																												    });
+				// Fonction pour ouvrir le menu
+				function openSidebar() {
+					sidebar.classList.remove('-translate-x-full');
+					overlay.classList.remove('hidden');
+					document.body.style.overflow = 'hidden';
+				}
 
-																												    /** Radial Progress **/
-																												    const radial = document.getElementById('radialChart');
-																												    new Chart(radial, {
-																												        type: 'doughnut',
-																												        data: {
-																												            datasets: [{
-																												                data: [75, 25],
-																												                circumference: 180,
-																												                rotation: 270
-																												            }]
-																												        }
-																												    });
-																												</script>
+				// Fonction pour fermer le menu
+				function closeSidebarMenu() {
+					sidebar.classList.add('-translate-x-full');
+					overlay.classList.add('hidden');
+					document.body.style.overflow = '';
+				}
 
+				// Événements
+				if (menuToggle) {
+					menuToggle.addEventListener('click', openSidebar);
+				}
+
+				if (closeSidebar) {
+					closeSidebar.addEventListener('click', closeSidebarMenu);
+				}
+
+				if (overlay) {
+					overlay.addEventListener('click', closeSidebarMenu);
+				}
+
+				// Fermer le menu sur les liens de navigation (mobile)
+				const navLinks = sidebar.querySelectorAll('a');
+				navLinks.forEach(link => {
+					link.addEventListener('click', () => {
+						if (window.innerWidth < 1024) {
+							closeSidebarMenu();
+						}
+					});
+				});
+			});
+		</script>
 	</body>
 </html>
