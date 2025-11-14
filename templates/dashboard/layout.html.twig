@@ -1,0 +1,108 @@
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>
+			{{ block('title') }}
+		</title>
+		<!-- Tailwind -->
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+		<!-- Heroicons -->
+		 <script src="https://unpkg.com/feather-icons"></script>
+	</head>
+
+	<body class="bg-gray-100">
+
+		<div
+			class="flex">
+
+			<!-- SIDEBAR -->
+			<aside class="w-64 bg-white h-screen shadow-md fixed">
+				<div class="p-6 border-b">
+					<h1 class="text-xl font-bold flex items-center gap-2">
+						<span class="bg-blue-600 text-white px-2 py-1 rounded-lg">TF</span>
+						TaskFlow
+					</h1>
+				</div>
+
+				<nav class="p-4">
+					<a class="flex items-center gap-3 p-3 {{ is_current_route('app_dashboard') ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-100 text-gray-700' }} rounded-lg  font-medium mb-2" href="{{ path('app_dashboard') }}">
+						<i data-feather="grid"></i>
+						Dashboard
+					</a>
+
+					<a class="flex items-center gap-3 p-3 {{ is_current_route(['app_task', 'app_add_task', 'app_edit_task', 'app_delete_task'] ) ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-100 text-gray-700' }} rounded-lg  mb-2" href="{{ path('app_task') }}">
+						<i data-feather="shopping-cart"></i>
+						Tâches
+					</a>
+				</nav>
+			</aside>
+
+			<!-- MAIN CONTENT -->
+			<main
+				class="ml-64 w-full p-6">
+
+				<!-- HEADER -->
+				<header class="flex items-center justify-between mb-6">
+					<h2 class="text-2xl font-bold">Dashboard</h2>
+
+					<div class="flex items-center gap-4">
+						<button class="p-2 bg-gray-200 rounded-full">
+							<i data-feather="bell"></i>
+						</button>
+						<img src="https://i.pravatar.cc/40" class="rounded-full w-10 h-10">
+					</div>
+				</header>
+
+				<!-- CONTENT -->
+				{{ block('content') }}
+
+
+			</main>
+
+		</div>
+
+		<!-- Feather Icons -->
+	 <script>
+														    feather.replace();
+														</script>
+
+		<!-- Chart.js -->
+		 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+		 <script>
+																												    /** Line Chart **/
+																									  const ctx = document.getElementById('salesChart');
+																												    new Chart(ctx, {
+																												        type: 'bar',
+																												        data: {
+																												            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+																												            datasets: [{
+																												                label: 'Sales',
+																												                data: [12, 19, 8, 17, 12, 15, 18, 10, 22, 19, 14, 7],
+																												                borderWidth: 1
+																												            }]
+																												        }
+																												    });
+
+																												    /** Radial Progress **/
+																												    const radial = document.getElementById('radialChart');
+																												    new Chart(radial, {
+																												        type: 'doughnut',
+																												        data: {
+																												            datasets: [{
+																												                data: [75, 25],
+																												                circumference: 180,
+																												                rotation: 270
+																												            }]
+																												        }
+																												    });
+																												</script>
+
+	</body>
+</html>

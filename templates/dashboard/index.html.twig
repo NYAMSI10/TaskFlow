@@ -1,0 +1,57 @@
+{% extends "dashboard/layout.html.twig" %}
+
+{% block title %}Dashboard
+{% endblock %}
+
+{% block content %}
+	<!-- CARDS -->
+	<div
+		class="grid grid-cols-3 gap-6">
+
+		<!-- Customers -->
+		<div class="bg-white p-6 rounded-xl shadow flex items-center justify-between">
+			<div>
+				<p class="text-gray-500">Customers</p>
+				<h3 class="text-3xl font-bold">3,782</h3>
+			</div>
+			<span class="text-green-600 bg-green-100 px-3 py-1 rounded-lg">+11%</span>
+		</div>
+
+		<!-- Orders -->
+		<div class="bg-white p-6 rounded-xl shadow flex items-center justify-between">
+			<div>
+				<p class="text-gray-500">Orders</p>
+				<h3 class="text-3xl font-bold">5,359</h3>
+			</div>
+			<span class="text-red-600 bg-red-100 px-3 py-1 rounded-lg">-9%</span>
+		</div>
+
+		<!-- Revenue -->
+		<div class="bg-white p-6 rounded-xl shadow flex items-center justify-between">
+			<div>
+				<p class="text-gray-500">Revenue</p>
+				<h3 class="text-3xl font-bold">$20K</h3>
+			</div>
+			<span class="text-green-600 bg-green-100 px-3 py-1 rounded-lg">+10%</span>
+		</div>
+
+	</div>
+
+	<!-- CHARTS SECTION -->
+	<div
+		class="grid grid-cols-3 gap-6 mt-6">
+
+		<!-- SALES CHART -->
+		<div class="bg-white p-6 rounded-xl shadow col-span-2">
+			<h3 class="text-lg font-semibold mb-4">Monthly Sales</h3>
+			<canvas id="salesChart"></canvas>
+		</div>
+
+		<!-- RADIAL CHART -->
+		<div class="bg-white p-6 rounded-xl shadow">
+			<h3 class="text-lg font-semibold mb-4">Monthly Target</h3>
+			<canvas id="radialChart"></canvas>
+		</div>
+
+	</div>
+{% endblock %}

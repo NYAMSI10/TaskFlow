@@ -1,0 +1,27 @@
+{% extends "dashboard/layout.html.twig" %}
+
+{% block title %}Task
+{% endblock %}
+
+{% block content %}
+	<div class="max-w-3xl mx-auto bg-white shadow rounded-2xl p-8">
+		<h1 class="text-2xl font-bold mb-6">{{ is_edit ? 'Modifier' : 'Ajouter' }}
+			une tâche</h1>
+
+		{{ form_start(form) }}
+
+		<div class="space-y-4">
+			{{ form_row(form.title) }}
+			{{ form_row(form.description) }}
+			{{ form_row(form.deadline) }}
+			{{ form_row(form.priority) }}
+			{{ form_row(form.status) }}
+		</div>
+
+		<button class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+			Enregistrer
+		</button>
+
+		{{ form_end(form) }}
+	</div>
+{% endblock %}

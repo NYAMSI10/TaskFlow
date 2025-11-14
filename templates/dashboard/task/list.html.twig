@@ -1,0 +1,95 @@
+{% extends "dashboard/layout.html.twig" %}
+
+{% block title %}Task
+{% endblock %}
+
+{% block content %}
+	<div class="max-w-6xl mx-auto bg-white shadow rounded-2xl p-8">
+		<h1 class="text-2xl font-bold mb-6">Liste des tâches</h1>
+
+
+		<!-- Filtres & Tri -->
+		<div
+			class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+			<!-- Filtre Statut -->
+			<select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+				<option value="">Statut : Tous</option>
+				<option value="todo">À faire</option>
+				<option value="in_progress">En cours</option>
+				<option value="done">Terminées</option>
+			</select>
+
+
+			<!-- Filtre Priorité -->
+			<select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+				<option value="">Priorité : Toutes</option>
+				<option value="low">Basse</option>
+				<option value="medium">Moyenne</option>
+				<option value="high">Haute</option>
+			</select>
+
+
+			<!-- Tri -->
+			<select class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+				<option value="date_asc">Date limite (croissant)</option>
+				<option value="date_desc">Date limite (décroissant)</option>
+				<option value="priority">Priorité</option>
+			</select>
+
+
+			<!-- Bouton créer -->
+			<a href="{{ path('app_add_task') }}" class="bg-blue-600 text-white text-center py-2 rounded-lg hover:bg-blue-700">Créer une tâche</a>
+		</div>
+
+
+		<!-- Tableau des tâches -->
+		<div class="overflow-x-auto">
+			<table class="w-full border-collapse">
+				<thead>
+					<tr class="bg-gray-100 text-gray-700">
+						<th class="p-3 text-left">Titre</th>
+						<th class="p-3 text-left">Priorité</th>
+						<th class="p-3 text-left">Statut</th>
+						<th class="p-3 text-left">Date limite</th>
+						<th class="p-3 text-center">Actions</th>
+					</tr>
+				</thead>
+
+
+				<tbody class="text-gray-700">
+					{% if tasks | length > 0 %}
+						{% for task in tasks %}
+
+							<tr class="border-b hover:bg-blue-300 cursor-pointer transition duration-50">
+								<td class="p-3 font-medium">{{ task.title }}</td>
+								<td class="p-3">
+									<span class="px-2 py-1 rounded bg-red-100 text-red-600 text-sm">{{ task.priority }}</span>
+								</td>
+								<td class="p-3">
+									<span class="px-2 py-1 rounded bg-yellow-100 text-yellow-600 text-sm">{{ task.status }}</span>
+								</td>
+								<td class="p-3">{{ task.deadline|date('d/m/Y') }}</td>
+								<td class="p-3 flex justify-center gap-3">
+									<a href="{{ path('app_edit_task', {'id': task.id}) }}" class="text-blue-600 hover:underline">Modifier</a>
+									<a href="{{ path('app_delete_task', {'id': task.id}) }}" class="text-red-600 hover:underline" onclick="return confirm('Voulez-vous vraiment supprimer cette tâche ?');">
+										Supprimer
+									</a>
+								</td>
+							</tr>
+						{% endfor %}
+					{% else %}
+						<tr>
+							<td colspan="5" class="p-3 text-center">Aucune tâche trouvée.</td>
+						</tr>
+					{% endif %}
+
+					<!-- Ligne exemple -->
+
+
+				</tbody>
+			</table>
+		</div>
+
+
+	</div>
+{% endblock %}
