@@ -1,99 +1,100 @@
 {% extends 'dashboard/layout.html.twig' %}
 
-{% block title %}Partager une tâche{% endblock %}
+{% block title %}Partager une tâche
+{% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        /* Style Select2 pour correspondre à Tailwind */
-        .select2-container--default .select2-selection--multiple {
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            padding: 0.5rem 1rem;
-            min-height: 42px;
-        }
-        .select2-container--default.select2-container--focus .select2-selection--multiple {
-            border-color: #3b82f6;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        .select2-container--default .select2-selection--multiple .select2-selection__choice {
-            background-color: #3b82f6;
-            border: none;
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-        }
-        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-            color: white;
-            margin-right: 0.25rem;
-        }
-        .select2-container {
-            width: 100% !important;
-        }
-    </style>
+	{{ parent() }}
+	<!-- Select2 CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+	<style>
+		/* Style Select2 pour correspondre à Tailwind */
+		.select2-container--default .select2-selection--multiple {
+			border: 1px solid #d1d5db;
+			border-radius: 0.5rem;
+			padding: 0.5rem 1rem;
+			min-height: 42px;
+		}
+		.select2-container--default.select2-container--focus .select2-selection--multiple {
+			border-color: #3b82f6;
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+		}
+		.select2-container--default .select2-selection--multiple .select2-selection__choice {
+			background-color: #3b82f6;
+			border: none;
+			color: white;
+			padding: 0.25rem 0.5rem;
+			border-radius: 0.25rem;
+		}
+		.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+			color: white;
+			margin-right: 0.25rem;
+		}
+		.select2-container {
+			width: 100% !important;
+		}
+	</style>
 {% endblock %}
 
 {% block content %}
-    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 class="text-2xl font-bold mb-6">{{ form_title|default('Partager une tâche') }}</h1>
+	<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+		<h1 class="text-2xl font-bold mb-6">{{ form_title|default('Partager une tâche') }}</h1>
 
-        {{ form_start(form) }}
-            <div class="space-y-4">
-                <div>
-                    {{ form_label(form.comment, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                    {{ form_widget(form.comment) }}
-                    {{ form_errors(form.comment) }}
-                </div>
+		{{ form_start(form) }}
+		<div class="space-y-4">
+			<div>
+				{{ form_label(form.comment, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+				{{ form_widget(form.comment) }}
+				{{ form_errors(form.comment) }}
+			</div>
 
-                <div>
-                    {{ form_label(form.permission, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                    {{ form_widget(form.permission) }}
-                    {{ form_errors(form.permission) }}
-                </div>
+			<div>
+				{{ form_label(form.permission, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+				{{ form_widget(form.permission) }}
+				{{ form_errors(form.permission) }}
+			</div>
 
-                <div>
-                    {{ form_label(form.user, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                    {{ form_widget(form.user) }}
-                    {{ form_errors(form.user) }}
-                </div>
+			<div>
+				{{ form_label(form.user, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+				{{ form_widget(form.user) }}
+				{{ form_errors(form.user) }}
+			</div>
 
-                <div>
-                    {{ form_label(form.task, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
-                    {{ form_widget(form.task) }}
-                    {{ form_errors(form.task) }}
-                </div>
-            </div>
+			<div>
+				{{ form_label(form.task, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+				{{ form_widget(form.task) }}
+				{{ form_errors(form.task) }}
+			</div>
+		</div>
 
-            <div class="flex gap-4 mt-6">
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
-                    {{ button_label|default('Enregistrer') }}
-                </button>
-                <a href="{{ path('app_dashboard') }}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition">
-                    Annuler
-                </a>
-            </div>
-        {{ form_end(form) }}
-    </div>
+		<div class="flex gap-4 mt-6">
+			<button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+				{{ button_label|default('Enregistrer') }}
+			</button>
+			<a href="{{ path('app_dashboard') }}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition">
+				Annuler
+			</a>
+		</div>
+		{{ form_end(form) }}
+	</div>
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <!-- jQuery (requis pour Select2) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    
-    <script>
-        $(document).ready(function() {
-            // Initialiser Select2 sur le champ utilisateurs multiple
-            $('.select2-multiple').select2({
-                placeholder: 'Sélectionner des utilisateurs...',
-                allowClear: true,
-                width: '100%'
-            });
-        });
-    </script>
+	{{ parent() }}
+<!-- jQuery (requis pour Select2) -->
+	 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- Select2 JS -->
+	 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+	 <script>
+	    document.addEventListener("DOMContentLoaded", function () {
+	        $('.select2-multiple').select2({
+	            placeholder: "Sélectionner des utilisateurs...",
+	            allowClear: true,
+	            width: "100%"
+	        });
+	    });
+	</script>
+
 {% endblock %}

@@ -2,6 +2,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="shortcut icon" href="logo.webp"/>
+
 		<title>
 			{{ block('title') }}
 		</title>
@@ -18,7 +20,8 @@
 
 	<body class="bg-gray-100">
 
-		<div class="flex">
+		<div
+			class="flex">
 
 			<!-- SIDEBAR -->
 			<aside id="sidebar" class="w-64 bg-white h-screen shadow-md fixed z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
@@ -50,11 +53,13 @@
 			<div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
 
 			<!-- MAIN CONTENT -->
-			<main class="lg:ml-64 w-full p-4 md:p-6">
+			<main
+				class="lg:ml-64 w-full p-4 md:p-6">
 
 				<!-- HEADER -->
 				<header class="flex items-center justify-between mb-6">
-					<div class="flex items-center gap-3">
+					<div
+						class="flex items-center gap-3">
 						<!-- Bouton menu burger sur mobile -->
 						<button id="menuToggle" class="lg:hidden p-2 hover:bg-gray-200 rounded-lg">
 							<i data-feather="menu"></i>
@@ -81,53 +86,53 @@
 		</div>
 
 		<!-- Script pour le menu mobile -->
-		<script>
-			document.addEventListener('DOMContentLoaded', function() {
-				// Initialiser les icônes Feather
-				feather.replace();
+		 <script>
+							document.addEventListener('DOMContentLoaded', function() {
+								// Initialiser les icônes Feather
+								feather.replace();
 
-				const menuToggle = document.getElementById('menuToggle');
-				const closeSidebar = document.getElementById('closeSidebar');
-				const sidebar = document.getElementById('sidebar');
-				const overlay = document.getElementById('overlay');
+								const menuToggle = document.getElementById('menuToggle');
+								const closeSidebar = document.getElementById('closeSidebar');
+								const sidebar = document.getElementById('sidebar');
+								const overlay = document.getElementById('overlay');
 
-				// Fonction pour ouvrir le menu
-				function openSidebar() {
-					sidebar.classList.remove('-translate-x-full');
-					overlay.classList.remove('hidden');
-					document.body.style.overflow = 'hidden';
-				}
+								// Fonction pour ouvrir le menu
+								function openSidebar() {
+									sidebar.classList.remove('-translate-x-full');
+									overlay.classList.remove('hidden');
+									document.body.style.overflow = 'hidden';
+								}
 
-				// Fonction pour fermer le menu
-				function closeSidebarMenu() {
-					sidebar.classList.add('-translate-x-full');
-					overlay.classList.add('hidden');
-					document.body.style.overflow = '';
-				}
+								// Fonction pour fermer le menu
+								function closeSidebarMenu() {
+									sidebar.classList.add('-translate-x-full');
+									overlay.classList.add('hidden');
+									document.body.style.overflow = '';
+								}
 
-				// Événements
-				if (menuToggle) {
-					menuToggle.addEventListener('click', openSidebar);
-				}
+								// Événements
+								if (menuToggle) {
+									menuToggle.addEventListener('click', openSidebar);
+								}
 
-				if (closeSidebar) {
-					closeSidebar.addEventListener('click', closeSidebarMenu);
-				}
+								if (closeSidebar) {
+									closeSidebar.addEventListener('click', closeSidebarMenu);
+								}
 
-				if (overlay) {
-					overlay.addEventListener('click', closeSidebarMenu);
-				}
+								if (overlay) {
+									overlay.addEventListener('click', closeSidebarMenu);
+								}
 
-				// Fermer le menu sur les liens de navigation (mobile)
-				const navLinks = sidebar.querySelectorAll('a');
-				navLinks.forEach(link => {
-					link.addEventListener('click', () => {
-						if (window.innerWidth < 1024) {
-							closeSidebarMenu();
-						}
-					});
-				});
-			});
-		</script>
+								// Fermer le menu sur les liens de navigation (mobile)
+								const navLinks = sidebar.querySelectorAll('a');
+								navLinks.forEach(link => {
+									link.addEventListener('click', () => {
+										if (window.innerWidth < 1024) {
+											closeSidebarMenu();
+										}
+									});
+								});
+							});
+						</script>
 	</body>
 </html>
