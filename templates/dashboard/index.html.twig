@@ -4,54 +4,212 @@
 {% endblock %}
 
 {% block content %}
-	<!-- CARDS -->
-	<div
-		class="grid grid-cols-3 gap-6">
+	<!-- Dashboard Grid -->
+	<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
 
-		<!-- Customers -->
-		<div class="bg-white p-6 rounded-xl shadow flex items-center justify-between">
-			<div>
-				<p class="text-gray-500">Customers</p>
-				<h3 class="text-3xl font-bold">3,782</h3>
-			</div>
-			<span class="text-green-600 bg-green-100 px-3 py-1 rounded-lg">+11%</span>
+		<!-- Graphique circulaire - Tâches par statut -->
+		<div class="lg:col-span-1 bg-white rounded-lg shadow-md p-6">
+			<h3 class="text-lg font-semibold mb-4 text-gray-800">Tâches par statut</h3>
+			
+			{% if tasksByStatus is empty %}
+				<div class="flex items-center justify-center h-64 text-gray-400">
+					<div class="text-center">
+						<i data-feather="inbox" class="mx-auto mb-2" style="width: 48px; height: 48px;"></i>
+						<p>Aucune tâche</p>
+					</div>
+				</div>
+			{% else %}
+				<!-- Canvas pour le graphique -->
+				<div class="flex justify-center">
+					<canvas id="statusChart" class="max-w-full" style="max-height: 250px;"></canvas>
+				</div>
+				
+				<!-- Légende -->
+				<div class="mt-4 space-y-2">
+					{% set statusLabels = {
+						'todo': 'À faire',
+						'in_progress': 'En cours',
+						'done': 'Terminée',
+						'pending': 'En attente'
+					} %}
+					{% set statusColors = {
+						'todo': 'bg-blue-500',
+						'in_progress': 'bg-yellow-500',
+						'done': 'bg-green-500',
+						'pending': 'bg-gray-500'
+					} %}
+					
+					{% for status, count in tasksByStatus %}
+						<div class="flex items-center justify-between">
+							<div class="flex items-center gap-2">
+								<span class="w-3 h-3 rounded-full {{ statusColors[status] ?? 'bg-gray-400' }}"></span>
+								<span class="text-sm text-gray-600">{{ statusLabels[status] ?? status }}</span>
+							</div>
+							<span class="text-sm font-semibold text-gray-800">{{ count }}</span>
+						</div>
+					{% endfor %}
+					
+					<div class="pt-2 border-t mt-2">
+						<div class="flex items-center justify-between">
+							<span class="text-sm font-semibold text-gray-700">Total</span>
+							<span class="text-sm font-bold text-gray-900">{{ totalTasks }}</span>
+						</div>
+					</div>
+				</div>
+			{% endif %}
 		</div>
 
-		<!-- Orders -->
-		<div class="bg-white p-6 rounded-xl shadow flex items-center justify-between">
-			<div>
-				<p class="text-gray-500">Orders</p>
-				<h3 class="text-3xl font-bold">5,359</h3>
+		<!-- Tâches urgentes et en retard -->
+		<div class="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+			<div class="flex items-center justify-between mb-4">
+				<h3 class="text-lg font-semibold text-gray-800">Tâches critiques</h3>
+				<span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-600">
+					{{ criticalTasks|length }} tâche{% if criticalTasks|length > 1 %}s{% endif %}
+				</span>
 			</div>
-			<span class="text-red-600 bg-red-100 px-3 py-1 rounded-lg">-9%</span>
+			
+			{% if criticalTasks is empty %}
+				<div class="flex items-center justify-center h-64 text-gray-400">
+					<div class="text-center">
+						<i data-feather="check-circle" class="mx-auto mb-2" style="width: 48px; height: 48px;"></i>
+						<p>Aucune tâche critique</p>
+					</div>
+				</div>
+			{% else %}
+				<div class="overflow-x-auto">
+					<div class="space-y-3 max-h-96 overflow-y-auto">
+						{% for task in criticalTasks %}
+							{% set isLate = task.deadline and task.deadline < date() %}
+							{% set isUrgent = task.priority == 'high' %}
+							
+							<div class="border-l-4 {{ isLate ? 'border-red-500' : 'border-orange-500' }} bg-gray-50 p-4 rounded-r-lg hover:bg-gray-100 transition">
+								<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+									<div class="flex-1">
+										<div class="flex flex-wrap items-center gap-2 mb-1">
+											<h4 class="font-semibold text-gray-800">{{ task.title }}</h4>
+											{% if isLate %}
+												<span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-600">
+													<i data-feather="alert-circle" style="width: 12px; height: 12px; display: inline;"></i>
+													En retard
+												</span>
+											{% endif %}
+											{% if isUrgent %}
+												<span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-orange-100 text-orange-600">
+													<i data-feather="zap" style="width: 12px; height: 12px; display: inline;"></i>
+													Urgent
+												</span>
+											{% endif %}
+										</div>
+										{% if task.description %}
+											<p class="text-sm text-gray-600 line-clamp-2">{{ task.description }}</p>
+										{% endif %}
+										{% if task.deadline %}
+											<p class="text-xs text-gray-500 mt-1">
+												<i data-feather="calendar" style="width: 12px; height: 12px; display: inline;"></i>
+												Échéance : {{ task.deadline|date('d/m/Y') }}
+											</p>
+										{% endif %}
+									</div>
+									<div class="flex items-center gap-2">
+										<a href="{{ path('app_edit_task', {id: task.id}) }}" class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+											Voir
+										</a>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
 		</div>
-
-		<!-- Revenue -->
-		<div class="bg-white p-6 rounded-xl shadow flex items-center justify-between">
-			<div>
-				<p class="text-gray-500">Revenue</p>
-				<h3 class="text-3xl font-bold">$20K</h3>
-			</div>
-			<span class="text-green-600 bg-green-100 px-3 py-1 rounded-lg">+10%</span>
-		</div>
-
 	</div>
 
-	<!-- CHARTS SECTION -->
-	<div
-		class="grid grid-cols-3 gap-6 mt-6">
-
-		<!-- SALES CHART -->
-		<div class="bg-white p-6 rounded-xl shadow col-span-2">
-			<h3 class="text-lg font-semibold mb-4">Monthly Sales</h3>
-			<canvas id="salesChart"></canvas>
+	<!-- Historique des modifications -->
+	<div class="bg-white rounded-lg shadow-md p-6">
+		<div class="flex items-center justify-between mb-4">
+			<h3 class="text-lg font-semibold text-gray-800">Historique des modifications</h3>
+			<i data-feather="clock" class="text-gray-400"></i>
 		</div>
-
-		<!-- RADIAL CHART -->
-		<div class="bg-white p-6 rounded-xl shadow">
-			<h3 class="text-lg font-semibold mb-4">Monthly Target</h3>
-			<canvas id="radialChart"></canvas>
+		
+		<div class="text-center py-12 text-gray-400">
+			<i data-feather="activity" class="mx-auto mb-3" style="width: 48px; height: 48px;"></i>
+			<p class="text-sm">L'historique des modifications sera disponible prochainement</p>
+			<p class="text-xs mt-2">Cette fonctionnalité nécessite l'ajout d'une entité d'audit</p>
 		</div>
-
 	</div>
+
+	<!-- Script Chart.js -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Initialiser les icônes Feather
+			feather.replace();
+			
+			{% if tasksByStatus is not empty %}
+			// Préparer les données pour le graphique
+			const statusData = {{ tasksByStatus|json_encode|raw }};
+			
+			const statusLabels = {
+				'todo': 'À faire',
+				'in_progress': 'En cours',
+				'done': 'Terminée',
+				'pending': 'En attente'
+			};
+			
+			const statusColorsMap = {
+				'todo': '#3b82f6',      // blue-500
+				'in_progress': '#eab308', // yellow-500
+				'done': '#22c55e',     // green-500
+				'pending': '#6b7280'   // gray-500
+			};
+			
+			const labels = [];
+			const values = [];
+			const colors = [];
+			
+			for (const [status, count] of Object.entries(statusData)) {
+				labels.push(statusLabels[status] || status);
+				values.push(count);
+				colors.push(statusColorsMap[status] || '#9ca3af');
+			}
+			
+			// Créer le graphique circulaire
+			const ctx = document.getElementById('statusChart');
+			if (ctx) {
+				new Chart(ctx, {
+					type: 'doughnut',
+					data: {
+						labels: labels,
+						datasets: [{
+							data: values,
+							backgroundColor: colors,
+							borderWidth: 2,
+							borderColor: '#ffffff'
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: true,
+						plugins: {
+							legend: {
+								display: false
+							},
+							tooltip: {
+								callbacks: {
+									label: function(context) {
+										const label = context.label || '';
+										const value = context.parsed || 0;
+										const total = context.dataset.data.reduce((a, b) => a + b, 0);
+										const percentage = ((value / total) * 100).toFixed(1);
+										return `${label}: ${value} (${percentage}%)`;
+									}
+								}
+							}
+						}
+					}
+				});
+			}
+			{% endif %}
+		});
+	</script>
 {% endblock %}

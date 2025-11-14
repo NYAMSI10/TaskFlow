@@ -43,9 +43,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $tasks;
 
+    /**
+     * @var Collection<int, Shared>
+     */
+    #[ORM\ManyToMany(targetEntity: Shared::class, mappedBy: 'user')]
+    private Collection $shareds;
+
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+        $this->shareds = new ArrayCollection();
     }
 
 
@@ -167,6 +174,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($task->getUser() === $this) {
                 $task->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Shared>
+     */
+    public function getShareds(): Collection
+    {
+        return $this->shareds;
+    }
+
+    public function addShared(Shared $shared): static
+    {
+        if (!$this->shareds->contains($shared)) {
+            $this->shareds->add($shared);
+            $shared->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShared(Shared $shared): static
+    {
+        if ($this->shareds->removeElement($shared)) {
+            $shared->removeUser($this);
         }
 
         return $this;

@@ -40,18 +40,18 @@ class TaskType extends AbstractType
             ->add('priority', ChoiceType::class, [
                 'label' => 'Priorité',
                 'choices' => [
-                    'Basse' => 'Basse',
-                    'Moyenne' => 'Moyenne',
-                    'Haute' => 'Haute',
+                    'Basse' => 'low',
+                    'Moyenne' => 'medium',
+                    'Haute' => 'high',
                 ],
                 'attr' => ['class' => 'w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500']
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'Statut',
                 'choices' => [
-                    'À faire' => 'À faire',
-                    'En cours' => 'En cours',
-                    'Terminée' => 'Terminée',
+                    'À faire' => 'todo',
+                    'En cours' => 'in_progress',
+                    'Terminée' => 'done',
                 ],
                 'attr' => ['class' => 'w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500']
             ]);;
